@@ -8,6 +8,7 @@ import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -49,14 +50,14 @@ public class Delivery {
     private Supplier supplier;
 
     /**
-     * Дата поставки.
+     * Дата и время поставки.
      */
     @Column(
-            name = "delivery_date",
+            name = "delivery_at",
             nullable = false
     )
     @ToString.Include
-    LocalDate deliveryDate;
+    OffsetDateTime deliveryAt;
 
     /**
      * Позиции, входящие в поставку.
@@ -69,9 +70,9 @@ public class Delivery {
     private List<DeliveryItem> items = new ArrayList<>();
 
     public Delivery(Supplier supplier,
-                    LocalDate deliveryDate) {
+                    OffsetDateTime deliveryAt) {
         this.supplier = supplier;
-        this.deliveryDate = deliveryDate;
+        this.deliveryAt = deliveryAt;
     }
 
     public void addItem(Product product,
