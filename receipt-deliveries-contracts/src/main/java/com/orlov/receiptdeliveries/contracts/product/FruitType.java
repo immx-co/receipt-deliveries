@@ -1,7 +1,7 @@
 package com.orlov.receiptdeliveries.contracts.product;
 
 /**
- * Типы фруктов для поставок.
+ * Перечисление типов фруктов для поставок.
  */
 public enum FruitType {
 

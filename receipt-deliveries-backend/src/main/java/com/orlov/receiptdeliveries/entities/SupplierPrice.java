@@ -42,7 +42,7 @@ public class SupplierPrice {
             name = "supplier_id",
             nullable = false
     )
-    private Supplier supplier;
+    private Organization supplier;
 
     /**
      * Товар, для которого назначена цена.

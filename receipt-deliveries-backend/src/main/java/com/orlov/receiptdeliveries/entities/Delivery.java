@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +46,20 @@ public class Delivery {
             name = "supplier_id",
             nullable = false
     )
-    private Supplier supplier;
+    private Organization supplier;
+
+    /**
+     * Приемщик, выполнивший приемку.
+     */
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            optional = false
+    )
+    @JoinColumn(
+            name = "receiver_id",
+            nullable = false
+    )
+    private Organization receiver;
 
     /**
      * Дата и время поставки.
@@ -57,7 +69,7 @@ public class Delivery {
             nullable = false
     )
     @ToString.Include
-    OffsetDateTime deliveryAt;
+    private OffsetDateTime deliveryAt;
 
     /**
      * Позиции, входящие в поставку.
@@ -69,9 +81,11 @@ public class Delivery {
     )
     private List<DeliveryItem> items = new ArrayList<>();
 
-    public Delivery(Supplier supplier,
+    public Delivery(Organization supplier,
+                    Organization receiver,
                     OffsetDateTime deliveryAt) {
         this.supplier = supplier;
+        this.receiver = receiver;
         this.deliveryAt = deliveryAt;
     }
 
