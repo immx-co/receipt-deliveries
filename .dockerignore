@@ -1,0 +1,16 @@
+# Git.
+.git
+.gitignore
+
+# IntelliJ IDEA.
+.idea
+**/.idea
+*.iml
+
+target
+**/target
+
+.env
+*.log
+
+**/node_modules
