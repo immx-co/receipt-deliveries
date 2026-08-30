@@ -31,22 +31,45 @@ services:
       args:
         APP_VERSION: ${APP_VERSION:-dev}
 
-    image: receipt-deliveries-backend:${APP_VERSION:-dev}
+    image: ghcr.io/immx-co/receipt-deliveries-backend:${APP_VERSION:-1.1.0}
     container_name: receipt-deliveries-backend
 
     ports:
       - "3100:3100"
 
     environment:
-      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
-      DB_USERNAME: ${POSTGRES_USER}
-      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-receipt_deliveries}
+      DB_USERNAME: ${POSTGRES_USER:-user}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-password}
 
       JWT_SECRET: ${JWT_SECRET}
 
     depends_on:
       postgres:
         condition: service_healthy
+
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: receipt-deliveries-frontend/Dockerfile
+      args:
+        APP_VERSION: ${APP_VERSION:-dev}
+
+    image: ghcr.io/immx-co/receipt-deliveries-frontend:${APP_VERSION:-1.1.0}
+    container_name: receipt-deliveries-frontend
+
+    ports:
+      - "3200:3200"
+
+    environment:
+      BACKEND_URL: http://backend:3100
+      VAADIN_LAUNCH_BROWSER: "false"
+
+    depends_on:
+      backend:
+        condition: service_started
 
     restart: unless-stopped
 

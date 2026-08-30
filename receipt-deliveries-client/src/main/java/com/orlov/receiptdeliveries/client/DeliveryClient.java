@@ -9,6 +9,7 @@ import org.springframework.web.client.RestClient;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -101,11 +102,17 @@ public class DeliveryClient {
                 .uri(uriBuilder -> uriBuilder.path("/api/v1/receivers/{receiverId}/deliveries/report")
                         .queryParam(
                                 "from",
-                                from.toString())
+                                "{from}")
                         .queryParam(
                                 "to",
-                                to.toString())
-                        .build(receiverId))
+                                "{to}")
+                        .build(Map.of(
+                                "receiverId",
+                                receiverId,
+                                "from",
+                                from.toString(),
+                                "to",
+                                to.toString())))
                 .headers(headers -> headers.setBearerAuth(accessToken))
                 .retrieve()
                 .body(DeliveryReportResponse.class);

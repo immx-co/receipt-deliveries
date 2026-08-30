@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class DeliveryService implements IDeliveryService {
+
+    private static final ZoneId ZONE = ZoneId.of("Europe/Moscow");
 
     private final DeliveryRepository deliveryRepository;
 
@@ -53,6 +56,7 @@ public class DeliveryService implements IDeliveryService {
                 OrganizationRole.RECEIVER);
 
         LocalDate priceDate = createDeliveryRequest.deliveryAt()
+                .atZoneSameInstant(ZONE)
                 .toLocalDate();
 
         List<SupplierPrice> activePrices = supplierPriceService.getActiveForSupplier(

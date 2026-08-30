@@ -1,4 +1,4 @@
-name: Publish backend Docker image
+name: Publish Docker images
 
 on:
   release:
@@ -6,16 +6,27 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: immx-co/receipt-deliveries-backend
 
 jobs:
-  publish-backend:
-    name: Build and publish backend
+  publish:
+    name: Publish ${{ matrix.component }}
     runs-on: ubuntu-latest
 
     permissions:
       contents: read
       packages: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - component: backend
+            image: immx-co/receipt-deliveries-backend
+            dockerfile: receipt-deliveries-backend/Dockerfile
+
+          - component: frontend
+            image: immx-co/receipt-deliveries-frontend
+            dockerfile: receipt-deliveries-frontend/Dockerfile
 
     steps:
       - name: Checkout repository
@@ -32,19 +43,19 @@ jobs:
         id: metadata
         uses: docker/metadata-action@v6
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ matrix.image }}
           tags: |
             type=semver,pattern={{version}},value=${{ github.event.release.tag_name }}
             type=raw,value=latest
 
-      - name: Build and publish backend image
+      - name: Build and publish image
         uses: docker/build-push-action@v7
         with:
           context: .
-          file: receipt-deliveries-backend/Dockerfile
+          file: ${{ matrix.dockerfile }}
           push: true
           tags: ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
           build-args: |
-            APP_VERSION=${{ github.event.release.tag_name }}
+            APP_VERSION=${{ steps.metadata.outputs.version }}
             VCS_REF=${{ github.sha }}
