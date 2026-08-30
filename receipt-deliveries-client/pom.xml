@@ -15,4 +15,19 @@
     <artifactId>receipt-deliveries-client</artifactId>
     <packaging>jar</packaging>
 
+    <dependencies>
+
+        <dependency>
+            <groupId>com.orlov.receiptdeliveries</groupId>
+            <artifactId>receipt-deliveries-contracts</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-restclient</artifactId>
+        </dependency>
+
+    </dependencies>
+
 </project>
