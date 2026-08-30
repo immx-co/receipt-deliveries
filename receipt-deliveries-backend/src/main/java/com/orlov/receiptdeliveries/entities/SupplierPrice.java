@@ -6,6 +6,7 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 /**
  * Модель записи цены товара.
@@ -88,4 +89,12 @@ public class SupplierPrice {
     )
     @ToString.Include
     private LocalDate endPriceEffect;
+
+    public SupplierPrice(Organization supplier, Product product, LocalDate startPriceEffect, BigDecimal pricePerKg, LocalDate endPriceEffect) {
+        this.supplier = supplier;
+        this.product = product;
+        this.startPriceEffect = startPriceEffect;
+        this.pricePerKg = pricePerKg;
+        this.endPriceEffect = endPriceEffect;
+    }
 }
