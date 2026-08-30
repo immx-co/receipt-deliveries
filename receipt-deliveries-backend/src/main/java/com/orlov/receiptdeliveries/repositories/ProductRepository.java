@@ -13,6 +13,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 
     /**
      * Поиск всех продуктов в отсортированном порядке.
+     *
      * @return список продуктов в отсортированном порядке.
      */
     List<Product> findAllByOrderByFruitTypeAscVarietyAsc();

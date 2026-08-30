@@ -17,48 +17,55 @@ public interface SupplierPriceRepository extends JpaRepository<SupplierPrice, UU
 
     /**
      * Ищет все цены по идентификатору поставщика.
+     *
      * @param supplierId идентификатор поставщика, все цены которого следует найти
      * @return список цен определенного поставщика
      */
-    @EntityGraph(attributePaths = "product")
+    @EntityGraph(attributePaths = { "product", "supplier" })
     List<SupplierPrice> findAllBySupplier_IdOrderByStartPriceEffectDesc(UUID supplierId);
 
     /**
      * Ищет все цены поставщика за указанную дату.
+     *
      * @param supplierId идентификатор поставщика
-     * @param priceDate дата, цены за которую следует найти
+     * @param priceDate  дата, цены за которую следует найти
      * @return отфильтрованный по дате список цен поставщика
      */
-    @EntityGraph(attributePaths = "product")
-    @Query("""
-          SELECT supplierPrice
-          FROM SupplierPrice supplierPrice
-          WHERE supplierPrice.supplier.id = :supplierId
-                    AND supplierPrice.startPriceEffect <= :priceDate
-                    AND supplierPrice.endPriceEffect >= :priceDate
-          ORDER BY supplierPrice.product.fruitType, supplierPrice.product.variety
-          """)
+    @EntityGraph(attributePaths = { "product", "supplier" })
+    @Query(
+            """
+                    SELECT supplierPrice
+                    FROM SupplierPrice supplierPrice
+                    WHERE supplierPrice.supplier.id = :supplierId
+                              AND supplierPrice.startPriceEffect <= :priceDate
+                              AND supplierPrice.endPriceEffect >= :priceDate
+                    ORDER BY supplierPrice.product.fruitType, supplierPrice.product.variety
+                    """
+    )
     List<SupplierPrice> findAllActiveBySupplierAndDate(@Param("supplierId") UUID supplierId,
                                                        @Param("priceDate") LocalDate priceDate);
 
     /**
      * Проверяет пересечение периодов цен для одного продукта одного поставщика.
-     * @param supplierId идентификатор поставщика
-     * @param productId идентификатор продукта
-     * @param startDate начало проверяемого периода
-     * @param endDate конец проверяемого периода
+     *
+     * @param supplierId      идентификатор поставщика
+     * @param productId       идентификатор продукта
+     * @param startDate       начало проверяемого периода
+     * @param endDate         конец проверяемого периода
      * @param excludedPriceId идентификатор исключаемой записи
      * @return количество записей с пересекающимися периодами
      */
-    @Query("""
-           SELECT COUNT(supplierPrice)
-           FROM SupplierPrice supplierPrice
-           WHERE supplierPrice.supplier.id = :supplierId
-                      AND supplierPrice.product.id = :productId
-                      AND supplierPrice.startPriceEffect <= :endDate
-                      AND supplierPrice.endPriceEffect >= :startDate
-                      AND (:excludedPriceId IS NULL OR supplierPrice.id <> :excludedPriceId)
-           """)
+    @Query(
+            """
+                    SELECT COUNT(supplierPrice)
+                    FROM SupplierPrice supplierPrice
+                    WHERE supplierPrice.supplier.id = :supplierId
+                               AND supplierPrice.product.id = :productId
+                               AND supplierPrice.startPriceEffect <= :endDate
+                               AND supplierPrice.endPriceEffect >= :startDate
+                               AND (:excludedPriceId IS NULL OR supplierPrice.id <> :excludedPriceId)
+                    """
+    )
     long countOverlappingPeriods(@Param("supplierId") UUID supplierId,
                                  @Param("productId") UUID productId,
                                  @Param("startDate") LocalDate startDate,

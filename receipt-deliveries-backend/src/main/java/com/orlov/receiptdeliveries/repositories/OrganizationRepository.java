@@ -15,6 +15,7 @@ public interface OrganizationRepository extends JpaRepository<Organization, UUID
 
     /**
      * Ищет организацию по логину организации.
+     *
      * @param login логин организации
      * @return организация, если она найдена по логину.
      */
@@ -22,6 +23,7 @@ public interface OrganizationRepository extends JpaRepository<Organization, UUID
 
     /**
      * Ищет организации с определенной ролью.
+     *
      * @param role роль, организации которой найти
      * @return список найденных организаций, соответствующих определенной роли.
      */
@@ -29,9 +31,11 @@ public interface OrganizationRepository extends JpaRepository<Organization, UUID
 
     /**
      * Ищет организацию с определенным идентификатором соответствующую определенной роли.
-     * @param id идентификатор организации
+     *
+     * @param id   идентификатор организации
      * @param role роль, организацию которой следует найти
      * @return организация, если она найдена и имеет указанную ролью
      */
-    Optional<Organization> findByIdAndRole(UUID id, OrganizationRole role);
+    Optional<Organization> findByIdAndRole(UUID id,
+                                           OrganizationRole role);
 }
