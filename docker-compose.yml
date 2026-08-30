@@ -7,9 +7,9 @@ services:
     ports:
       - "127.0.0.1:${POSTGRES_PORT:-5454}:5432"
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-receipt_deliveries}
+      POSTGRES_USER: ${POSTGRES_USER:-user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
@@ -25,12 +25,6 @@ services:
     restart: unless-stopped
 
   backend:
-    build:
-      context: .
-      dockerfile: receipt-deliveries-backend/Dockerfile
-      args:
-        APP_VERSION: ${APP_VERSION:-dev}
-
     image: ghcr.io/immx-co/receipt-deliveries-backend:${APP_VERSION:-1.1.0}
     container_name: receipt-deliveries-backend
 
@@ -42,8 +36,6 @@ services:
       DB_USERNAME: ${POSTGRES_USER:-user}
       DB_PASSWORD: ${POSTGRES_PASSWORD:-password}
 
-      JWT_SECRET: ${JWT_SECRET}
-
     depends_on:
       postgres:
         condition: service_healthy
@@ -51,12 +43,6 @@ services:
     restart: unless-stopped
 
   frontend:
-    build:
-      context: .
-      dockerfile: receipt-deliveries-frontend/Dockerfile
-      args:
-        APP_VERSION: ${APP_VERSION:-dev}
-
     image: ghcr.io/immx-co/receipt-deliveries-frontend:${APP_VERSION:-1.1.0}
     container_name: receipt-deliveries-frontend
 
